@@ -1,0 +1,256 @@
+Public multi As Integer
+'multi is the multiplier for changing the winner's score
+'Self draw = 2 and Stolen Tile = 3
+Public finScore As Integer
+Public weekCol
+Public playerRow
+'weekCol and playerRow are both dictionary variables that hold the row and column of the players
+'and weeks as the value and the name of the week/player as the key. So when the program needs to
+'determine their current score they can go to cell with the value of that column and row.
+Public ws As Worksheet
+
+Function checkDataEntry() As Boolean
+'This is a function that is used by the cmdExecute_Click sub-routine
+'It checks the values entered in the entry form to make sure
+'the data entered is both of useable and has correct values
+
+    Dim result As Boolean
+    result = True
+'Make sure the winner, scorebox and week are not empty
+    If (winner.Value = "") Then
+        result = False
+    End If
+    If (scoreBox.Value = "") Then
+        result = False
+    End If
+    If (week.Value = "") Then
+        result = False
+    End If
+    
+    If (scoreBox.Value < 3 Or scoreBox.Value > 10) Then
+        result = False
+    End If
+'Make sure the other players are not empty either
+    If (optPickUp.Value = False) Then
+        If (player2.Value = "") Then
+            result = False
+        End If
+        If (winner.Value = player2.Value) Then
+            result = False
+        End If
+    Else
+        'First check the other players are not empty
+        If (player2.Value = "" Or player3.Value = "" Or player4.Value = "") Then
+            result = False
+        End If
+        'Check the other players are not the same as the winner
+        winText = winner.Value
+        If (player2.Value = winText Or player3.Value = winText Or player4 = winText) Then
+            result = False
+        End If
+        'Finally check that the other players are not equal to each other
+        If (player2.Value = player3.Value Or player2.Value = player4.Value) Then
+            result = False
+        End If
+        If (player3.Value = player4.Value) Then
+            result = False
+        End If
+        'NOTE TO SELF: MAKE SURE TO CHECK THAT THE SCORE IS NOT MORE THAN 10 OR LESS THAN 0
+        
+    End If
+    checkDataEntry = result
+
+End Function
+
+Private Sub winnerPoints(cPlayer, cWeek, points, give)
+'A sub-routine that calculates the points to give to the winner
+
+    Dim cScore As Integer
+    'cScore is an integer that will hold the current score of that player. Current
+    'score is determined by the current week and the player
+    Dim cCol As Integer
+    Dim cRow As Integer
+    
+    cCol = weekCol.Item(cWeek)
+    cRow = playerRow.Item(cPlayer)
+    
+    If (ws.Cells(cRow, cCol).Value = "") Then
+        cScore = 0
+    Else
+        cScore = CInt(ws.Cells(cRow, cCol).Value)
+    End If
+    
+    If (give = True) Then
+        cScore = cScore + (points * multi)
+    Else
+        cScore = cScore - (points * multi)
+    End If
+    
+    ws.Cells(cRow, cCol).Value = cScore
+        
+        
+    
+End Sub
+Private Sub executeOrUndo(take)
+'This is a sub-routine that is used when either the execute or undo buttons
+'are clicked. The only difference is the value of take. When take is true points
+'are deducted from other players and given to the winner. When take is false the
+'the reverse is happens.
+
+    Dim result As Integer
+    Dim doUnload As Boolean
+    
+    cWinner = winner.Value
+    cWeek = week.Value
+    cScore = scoreBox.Value
+    
+    doUnload = checkDataEntry()
+    
+    If (doUnload = False) Then
+        MsgBox "Form not filled in correctly"
+    Else
+        Call winnerPoints(cWinner, cWeek, cScore, take)
+        Call otherPoints(player2.Value, cWeek, cScore, take)
+        'Players 3 and 4 are only used if the winner won or lost by self draw
+        If (optPickUp.Value = True) Then
+            Call otherPoints(player3.Value, cWeek, cScore, take)
+            Call otherPoints(player4.Value, cWeek, cScore, take)
+        End If
+    End If
+
+End Sub
+Private Sub otherPoints(cPlayer, cWeek, points, take)
+    Dim cScore As Integer
+    'cScore is an integer that will hold the current score of that player. Current
+    'score is determined by the current week and the player
+    Dim cCol As Integer
+    Dim cRow As Integer
+    
+    cCol = weekCol.Item(cWeek)
+    cRow = playerRow.Item(cPlayer)
+    
+    If (ws.Cells(cRow, cCol).Value = "") Then
+        cScore = 0
+    Else
+        cScore = CInt(ws.Cells(cRow, cCol).Value)
+    End If
+    
+    'Take the win is a steal then you need to take double the points from the opponent
+    'Else if the win is by pickup then the point loss is distrubuted across all other players
+    If (multi = 2) Then
+        points = points * 2
+    End If
+    
+    If (take = True) Then
+        cScore = cScore - points
+    Else
+        cScore = cScore + points
+    End If
+    ws.Cells(cRow, cCol).Value = cScore
+    
+End Sub
+
+
+Private Sub disableOtherPlayers()
+'A sub-routine that is used to disable the boxes for player 3 and 4.
+'It is used in conjunction with the radio boxes in the win-style section
+    player3.Value = ""
+    player3.Enabled = False
+    player3.BackColor = RGB(138, 138, 138)
+    player4.Value = ""
+    player4.Enabled = False
+    player4.BackColor = RGB(138, 138, 138)
+End Sub
+
+Private Sub enableOtherPlayers()
+'A sub-routine that is used to enable the drop down menus for players 3 and 4
+'It is used in conjunction with the radio boxes in the win-style section.
+    player3.Enabled = True
+    player3.BackColor = RGB(255, 255, 255)
+    player4.Enabled = True
+    player4.BackColor = RGB(255, 255, 255)
+End Sub
+
+Private Sub cmdClose_Click()
+'Unload the entire form and dismiss it
+    Unload Me
+End Sub
+
+Private Sub cmdExecute_Click()
+    executeOrUndo (True)
+End Sub
+
+Private Sub cmdUndo_Click()
+    executeOrUndo (False)
+End Sub
+
+Private Sub cmdReset_Click()
+'Empty the vlaues of the entire form
+    winner.Value = ""
+    player2.Value = ""
+    player3.Value = ""
+    player4.Value = ""
+    optSteal.Value = True
+    week.Value = ""
+    scoreBox = ""
+    multi = 2
+    Call disableOtherPlayers
+End Sub
+
+
+Private Sub helperName_Click()
+
+End Sub
+
+Private Sub optPickUp_Click()
+'In UTS Mahjong society the rules state that if you steal the tile for your win
+'Then your score is multiplied by 3
+    multi = 3
+    Call enableOtherPlayers
+End Sub
+
+Private Sub optSteal_Click()
+'In UTS mahjong society the rules state that if you win by self draw
+'Then your score is multiplied by 2
+    multi = 2
+    Call disableOtherPlayers
+End Sub
+
+Private Sub UserForm_Initialize()
+'This is the initilization subroutine when the user clicks on the button to open the form
+'create the dictionary variables for holding the players and the weeks.
+Set weekCol = CreateObject("Scripting.Dictionary")
+Set playerRow = CreateObject("Scripting.Dictionary")
+Set ws = Worksheets("Sheet1")
+
+'The default win-style for the form is win by stolen tile
+optSteal.Value = True
+multi = 2
+Call disableOtherPlayers
+
+
+Dim cntr As Integer
+Dim cntr2 As Integer
+'Find the number for the ending row or column where the players or weeks end
+cntr = Application.WorksheetFunction.CountA(Range("A:A"))
+cntr2 = Application.WorksheetFunction.CountA(Range("B1:L1"))
+
+'Add the player names to the drop down boxes and the dictionary. Add the row number to
+'the dictionary as the value.
+For i = 2 To cntr
+    winner.AddItem Cells(i, 1)
+    player2.AddItem Cells(i, 1)
+    player3.AddItem Cells(i, 1)
+    player4.AddItem Cells(i, 1)
+    playerRow.Add CStr(Cells(i, 1)), i
+Next i
+
+'The same process for players is down for the weeks.
+For i = 2 To cntr2
+    week.AddItem Cells(1, i)
+    weekCol.Add CStr(Cells(1, i)), i
+Next i
+    
+
+
+End Sub
