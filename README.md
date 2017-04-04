@@ -32,5 +32,5 @@ The four buttons work as follows:
 * Clear the Form - This will reset the form to a blank state
 * Close - This will close the form.
 
-# Future Features or Edits To The Program
+# Future Features Or Edits To The Program
 * Currently the error reporting states "Form not filled out correctly" when someone doesn't fill out the form in the correct way. Future versions should have clearer errors stating where exactly the error occured on the form. E.g. Winner and Loser can't be the same person.
