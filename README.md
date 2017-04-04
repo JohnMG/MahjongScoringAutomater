@@ -5,7 +5,7 @@ A small calculator that was built to help the UTS Mahjong society automate their
 
 The UTS Mahjong society records the scoring of their games in an excel spread sheet. At the end of each game people are required to calculate how many points they won and then add those points to their own scores as well as subtract points from the people they played with. Often people would make errors in the adding or scoring of points and these errors wouldn't be found for a few hours or days which would then lead to confusion about who won or lost what points. So I created this app as a way to automate the process and eliminate errors in the scoring and make playing a smoother experience.
 
-# Explanation of How UTS Does Their Scoring
+# Explanation of How The UTS Majong Society Does Their Scoring
 
 In order to understand this section, the reader needs to understand how Mahjong is played(at least with the Hong Kong version). UTS's scoring system is as follows:
 * calculate the points won
@@ -21,4 +21,13 @@ As you look at the sheet you will notice zeros below each week. This was a small
 Below the error checking is a grey button with the text "Open Helper Form". Click on this to open the Scoring Automater Form.
 
 # Guide To Using the Scoring Automater Form
+* Your Score is the initial amount of points the winner has won. Enter the number here.
+* Win Style is how the winner won. Win by stealing a tile will double the points and will only allow the entry of the winner's name and the player whose tile was stolen. Win by pick up(drawing the tile yourself) will tripple the points won and will unlock the boxes for the other players names.
+* Winner and Players. These are drop-down menu's where you can pick the Winner and the other players names
+* Week is the particular week the game was played in. This is a drop-down menu where you can choose the week.
 
+The four buttons work as follows:
+* Add Points - Clicking this button will add the points to the winner and subtracting the points from the relevant players score during a particular week.
+* Refund Points - In case a mistake is made in the initial calculation of the score this button can subtract the points from the winner and add the points back to the other players
+* Clear the Form - This will reset the form to a blank state
+* Close - This will close the form.
