@@ -1,6 +1,8 @@
 # MahjongScoringAutomater
 A small calculator that was built to help the UTS Mahjong society automate their scoring process.
 
+Note: this program requires the user to enable macros and while this program is safe, the author encourages users to be wary of any file that requires macros.
+
 # Purpose of the Program
 
 The UTS Mahjong society records the scoring of their games in an excel spread sheet. At the end of each game people are required to calculate how many points they won and then add those points to their own scores as well as subtract points from the people they played with. Often people would make errors in the adding or scoring of points and these errors wouldn't be found for a few hours or days which would then lead to confusion about who won or lost what points. So I created this app as a way to automate the process and eliminate errors in the scoring and make playing a smoother experience.
